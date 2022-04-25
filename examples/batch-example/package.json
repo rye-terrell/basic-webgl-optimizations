@@ -1,18 +1,18 @@
 {
-  "name": "batch-example",
-  "private": true,
-  "version": "0.0.0",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build --base /examples/batch-example/dist/",
-    "preview": "vite preview"
-  },
-  "devDependencies": {
-    "vite": "^2.9.2"
-  },
-  "dependencies": {
-    "gl-matrix": "^3.4.3",
-    "regl": "^2.1.0",
-    "trackball-controller": "^2.0.0"
-  }
+    "name": "batch-example",
+    "private": true,
+    "version": "0.0.0",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build --base /basic-webgl-optimizations/examples/batch-example/dist/",
+        "preview": "vite preview"
+    },
+    "devDependencies": {
+        "vite": "^2.9.2"
+    },
+    "dependencies": {
+        "gl-matrix": "^3.4.3",
+        "regl": "^2.1.0",
+        "trackball-controller": "^2.0.0"
+    }
 }
