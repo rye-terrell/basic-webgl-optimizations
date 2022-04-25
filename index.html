@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+
+        <title>reveal.js</title>
+
+        <link rel="stylesheet" href="dist/reset.css" />
+        <link rel="stylesheet" href="dist/reveal.css" />
+        <link rel="stylesheet" href="dist/theme/black.css" />
+
+        <!-- Theme used for syntax highlighted code -->
+        <link rel="stylesheet" href="plugin/highlight/monokai.css" />
+    </head>
+
+    <style>
+        .reveal h1,
+        .reveal h2,
+        .reveal h3,
+        .reveal h4,
+        .reveal h5,
+        .reveal h6 {
+            text-transform: none;
+        }
+    </style>
+
+    <body>
+        <div class="reveal">
+            <div class="slides">
+                <section>
+                    <h4>Basic Optimization of the WebGL Rendering Pipeline</h4>
+                    <img src="media/webgl-pipeline.svg" />
+                    <p>16.67 milliseconds</p>
+                </section>
+
+                <section>
+                    <section>
+                        <h4>Preparing your data</h4>
+                        <img src="media/webgl-pipeline-prepare.svg" />
+                    </section>
+
+                    <section>
+                        <h4>What if you have too much data?</h4>
+                        Parallelize the work with Web Workers.
+                        <img src="media/web-workers.svg" />
+                    </section>
+
+                    <section style="height: 75%">
+                        <h4>What if you have too much data?</h4>
+                        Perform the work progressively.
+                        <video
+                            src="media/progressive.mp4"
+                            autoplay
+                            muted
+                            loop
+                        ></video>
+                    </section>
+
+                    <section>
+                        <h4>What if you have too much data?</h4>
+                        Perform the work at opportune moments.
+                        <img src="media/lightbox.png" />
+                    </section>
+
+                    <section>
+                        <h4>
+                            What if you're hitting Garabage Collection pauses?
+                        </h4>
+                        <div style="text-align: left">
+                            <ul>
+                                <li class="fragment">
+                                    Don't make unnecessary allocations, allocate
+                                    lazily
+                                </li>
+                                <li class="fragment">
+                                    Reuse objects, e.g. unit basis vectors
+                                </li>
+                                <li class="fragment">
+                                    Recycle objects, e.g. track objects
+                                </li>
+                            </ul>
+                        </div>
+                    </section>
+                </section>
+
+                <section>
+                    <section>
+                        <h4>Uploading your data</h4>
+                        <img src="media/webgl-pipeline-upload.svg" />
+                    </section>
+
+                    <section>
+                        <h4>When do data uploads happen?</h4>
+                        <ul>
+                            <li class="fragment">
+                                Most WebGL libraries obfuscate this, but it's
+                                typically at render time.
+                            </li>
+                            <li class="fragment">
+                                Be aware that if your rendering function is
+                                taking too long to execute, it may be a
+                                bandwidth issue, not simply CPU/GPU usage.
+                            </li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h4>
+                            How can we prevent frame drops due to limited
+                            bandwidth?
+                        </h4>
+                        <ul>
+                            <li class="fragment">
+                                Reduce data density, e.g. fewer lidar points
+                            </li>
+                            <li class="fragment">
+                                Upload progressively (see
+                                <a
+                                    href="https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bufferSubData"
+                                    >bufferSubData</a
+                                >)
+                            </li>
+                            <li class="fragment">
+                                Upload at opportune times, e.g. the Lightbox
+                                approach
+                            </li>
+                        </ul>
+                    </section>
+                </section>
+
+                <section>
+                    <section>
+                        <h4>Invoking draw calls</h4>
+                        <img src="media/webgl-pipeline-draw.svg" />
+                    </section>
+
+                    <section>
+                        <h4>Batching</h4>
+                        <iframe
+                            src="/examples/batch-example/dist"
+                            style="
+                                width: 100%;
+                                height: 500px;
+                                border: 0;
+                                border-radius: 4px;
+                                overflow: hidden;
+                                border: 1px solid grey;
+                            "
+                        ></iframe>
+                    </section>
+
+                    <section>
+                        <h4>Instancing</h4>
+                        <iframe
+                            src="/examples/instancing-example/dist"
+                            style="
+                                width: 100%;
+                                height: 500px;
+                                border: 0;
+                                border-radius: 4px;
+                                overflow: hidden;
+                                border: 1px solid grey;
+                            "
+                        ></iframe>
+                    </section>
+                </section>
+
+                <section>
+                    <section>
+                        <h4>Vertex shader</h4>
+                        <img src="media/webgl-pipeline-vertex.svg" />
+                    </section>
+
+                    <section>
+                        <h4>VS Cost = Vertices × Work per Vertex</h4>
+                        <ul>
+                            <li class="fragment">
+                                Reduce the number of vertices
+                                <ul>
+                                    <li class="fragment">
+                                        Simplify your meshes
+                                    </li>
+                                    <li class="fragment">Frustum culling</li>
+                                    <li class="fragment">Level of Detail</li>
+                                </ul>
+                            </li>
+                            <li class="fragment">
+                                Reduce the amount of work per vertex
+                                <ul>
+                                    <li class="fragment">
+                                        Precompute common operations on CPU,
+                                        e.g., matrix multiplications
+                                    </li>
+                                    <li class="fragment">
+                                        GPU-specific optimizations (avoid
+                                        vertex-specific branching,
+                                        multiply-then-add)
+                                    </li>
+                                    <li class="fragment">
+                                        Generic low-level optimizations (lookup
+                                        tables, reusing calculations, etc)
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </section>
+                </section>
+
+                <section>
+                    <section>
+                        <h4>Fragment shader</h4>
+                        <img src="media/webgl-pipeline-fragment.svg" />
+                    </section>
+
+                    <section>
+                        <h6>FS Cost = Fragments × Work per Fragment</h6>
+                        <ul>
+                            <li class="fragment">
+                                Reduce the number of fragments
+                                <ul>
+                                    <li class="fragment">
+                                        Lower the resolution (upscale or smaller
+                                        canvas)
+                                    </li>
+                                    <li class="fragment">
+                                        Disable MSAA (use nothing or FXAA)
+                                    </li>
+                                    <li class="fragment">
+                                        Avoid overdraw (render front-to-back, be
+                                        wary of many transparent items)
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="fragment">
+                                Reduce the amount of work per fragment
+                                <ul>
+                                    <li class="fragment">
+                                        Precompute on CPU and in vertex shader
+                                        (normalization of face normals)
+                                    </li>
+                                    <li class="fragment">
+                                        GPU-specific optimizations (avoid
+                                        fragment-specific branching,
+                                        multiply-then-add)
+                                    </li>
+                                    <li class="fragment">
+                                        Generic low-level optimizations (lookup
+                                        tables, reusing calculations, etc)
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </section>
+                </section>
+
+                <section>
+                    <h4>Questions?</h4>
+                    <iframe
+                        src="/examples/instancing-example/dist"
+                        style="
+                            width: 100%;
+                            height: 500px;
+                            border: 0;
+                            border-radius: 4px;
+                            overflow: hidden;
+                            border: 1px solid grey;
+                        "
+                    ></iframe>
+                </section>
+            </div>
+        </div>
+
+        <script src="dist/reveal.js"></script>
+        <script src="plugin/notes/notes.js"></script>
+        <script src="plugin/markdown/markdown.js"></script>
+        <script src="plugin/highlight/highlight.js"></script>
+        <script>
+            // More info about initialization & config:
+            // - https://revealjs.com/initialization/
+            // - https://revealjs.com/config/
+            Reveal.initialize({
+                hash: true,
+                transition: "zoom",
+                // Learn about plugins: https://revealjs.com/plugins/
+                plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
+            });
+        </script>
+    </body>
+</html>

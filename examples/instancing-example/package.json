@@ -1,0 +1,17 @@
+{
+  "name": "instancing-example",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build --base /examples/instancing-example/dist/",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^2.9.2"
+  },
+  "dependencies": {
+    "gl-matrix": "^3.4.3",
+    "regl": "^2.1.0"
+  }
+}
